@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Auth2GitHub</string>
+    <string name="successMessage">You have successfully authenticated with Auth 2.0</string>
+    <string name="authTokenMsg">Your auth-token:</string>
+    <string name="refreshTokenMsg">Your refresh-token:</string>
+    <string name="refresh_text">Refresh Token</string>
+    <string name="logout_text">Logout</string>
+    <string name="login_txt">Login</string>
+</resources>
