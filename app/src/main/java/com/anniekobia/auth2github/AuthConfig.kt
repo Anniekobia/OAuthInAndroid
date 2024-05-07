@@ -10,7 +10,9 @@ object AuthConfig {
    /**
     * ToDo 2: Set the unique custom URL that you had configured to redirect back to your app
     */
-   const val REDIRECT_CALLBACK_URL = "com.anniekobia.auth2github://github/callbackUrl"
+   const val REDIRECT_CALLBACK_URL = "com.anniekobia.auth2github://github/redirect_callback_url"
+
+   const val LOGOUT_CALLBACK_URL = "com.anniekobia.auth2github://github.com/logout_callback_url"
 
    /**
     * “code” constant from the AppAuth library. This constant is responsible for returned value to
@@ -34,5 +36,4 @@ object AuthConfig {
    const val CLIENT_SECRET = BuildConfig.CLIENT_SECRET
 
 //   const val CALLBACK_URL = "ru.kts.oauth://github.com/callback"
-//   const val LOGOUT_CALLBACK_URL = "ru.kts.oauth://github.com/logout_callback"
 }

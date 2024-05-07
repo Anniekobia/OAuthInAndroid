@@ -22,10 +22,20 @@
         android:layout_height="wrap_content"
         android:text="@string/authTokenMsg"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loggedInTxt"/>
+
+    <TextView
+        android:id="@+id/authtokenValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/authtokenTxt"/>
 
     <TextView
         android:id="@+id/refreshtokenTxt"
@@ -33,10 +43,21 @@
         android:layout_height="wrap_content"
         android:text="@string/refreshTokenMsg"
         android:textStyle="bold"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/authtokenTxt"/>
+        app:layout_constraintTop_toBottomOf="@id/authtokenValue"/>
+
+    <TextView
+        android:id="@+id/refreshtokenValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:layout_marginTop="5dp"
+        android:maxLines="2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/refreshtokenTxt"/>
 
     <Button
         android:id="@+id/refreshBtn"
@@ -46,7 +67,7 @@
         android:layout_marginTop="150dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/refreshtokenTxt"
+        app:layout_constraintTop_toBottomOf="@id/refreshtokenValue"
         app:layout_constraintBottom_toTopOf="@id/logOutBtn"/>
 
     <Button

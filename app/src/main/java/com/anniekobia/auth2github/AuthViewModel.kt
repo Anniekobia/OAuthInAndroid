@@ -17,6 +17,7 @@ import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ClientAuthentication
 import net.openid.appauth.ClientSecretPost
+import net.openid.appauth.EndSessionRequest
 import net.openid.appauth.TokenRequest
 
 
@@ -24,7 +25,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val applicationContext = application.applicationContext
     private val authService: AuthorizationService = AuthorizationService(getApplication())
-    private val serviceConfiguration = AuthorizationServiceConfiguration(
+    private val authServiceConfiguration = AuthorizationServiceConfiguration(
         Uri.parse(AuthConfig.AUTH_URL),
         Uri.parse(AuthConfig.TOKEN_URL),
         null,
@@ -37,6 +38,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _authSuccess = MutableStateFlow(false)
     val authSuccess get() = _authSuccess.asStateFlow()
+
+    private val _openLogoutPage = MutableStateFlow(Intent())
+    val openLogoutPage get() = _openLogoutPage.asStateFlow()
+
+    private val sharedPref =
+        applicationContext.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
 
     fun openLoginPage() {
@@ -67,7 +74,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getAuthRequest(): AuthorizationRequest {
         return AuthorizationRequest.Builder(
-            serviceConfiguration,
+            authServiceConfiguration,
             AuthConfig.CLIENT_ID,
             AuthConfig.RESPONSE_TYPE,
             AuthConfig.REDIRECT_CALLBACK_URL.toUri()
@@ -116,28 +123,28 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     )
                     Log.e("AuthPOCLogs: ", "AuthVM: onAuthCodeReceived authentication success")
 
-                    val sharedPref =
-                        applicationContext.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
-                    response.accessToken?.let {
-                        with(sharedPref.edit()) {
-                            putString("AUTH_TOKEN", response.accessToken)
-                            apply()
-                        }
-                        Log.e(
-                            "AuthPOCLogs: ",
-                            "AuthVM: Your AuthToken is ${it}"
-                        )
+                    Log.e(
+                        "AuthPOCLogs: ",
+                        "AuthVM: TokensResponse ${response.request.refreshToken}"
+                    )
+                    with(sharedPref.edit()) {
+                        putString("AUTH_TOKEN", response.accessToken)
+                        putString("REFRESH_TOKEN", response.refreshToken)
+                        putString("ID_TOKEN", response.idToken)
+                        apply()
                     }
-                    response.refreshToken?.let {
-                        with(sharedPref.edit()) {
-                            putString("REFRESH_TOKEN", response.refreshToken)
-                            apply()
-                        }
-                        Log.e(
-                            "AuthPOCLogs: ",
-                            "AuthVM: Your RefreshToken is ${it}"
-                        )
-                    }
+                    Log.e(
+                        "AuthPOCLogs: ",
+                        "AuthVM: Your AuthToken is ${response.accessToken}"
+                    )
+                    Log.e(
+                        "AuthPOCLogs: ",
+                        "AuthVM: Your RefreshToken is ${response.refreshToken}"
+                    )
+                    Log.e(
+                        "AuthPOCLogs: ",
+                        "AuthVM: Your IdToken is ${response.idToken}"
+                    )
 
                     Result.success(tokens)
                 }
@@ -154,6 +161,40 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getClientAuthentication(): ClientAuthentication {
         return ClientSecretPost(AuthConfig.CLIENT_SECRET)
+    }
+
+    private fun getLogoutRequest(): EndSessionRequest {
+        val idToken = sharedPref.getString("ID_TOKEN", "")
+        return EndSessionRequest.Builder(authServiceConfiguration)
+            .setIdTokenHint(idToken)
+            .setPostLogoutRedirectUri(AuthConfig.LOGOUT_URL.toUri())
+            .build()
+    }
+
+    fun openLogoutPage() {
+        val customTabsIntent = CustomTabsIntent.Builder().build()
+        val logoutRequest = getLogoutRequest()
+
+        Log.e(
+            "AuthPOCLogs: ",
+            "1. AuthVM: LogoutRequest Data:${logoutRequest.idTokenHint}"
+        )
+
+        try {
+            val logoutIntent = authService.getEndSessionRequestIntent(
+                logoutRequest,
+                customTabsIntent
+            )
+            Log.e(
+                "AuthPOCLogs: ",
+                "2. AuthVM: Intent Open Logout page before: ${logoutRequest.toUri()}"
+            )
+            _openLogoutPage.value = logoutIntent
+            Log.e("AuthPOCLogs: ", "2. AuthVM: Intent Open Logout page after: ${logoutRequest.toUri()}")
+        } catch (e: Exception) {
+            Log.e("AuthPOCLogs: ", "AuthVM: Intent Open Logout page failed")
+            return
+        }
     }
 
     override fun onCleared() {

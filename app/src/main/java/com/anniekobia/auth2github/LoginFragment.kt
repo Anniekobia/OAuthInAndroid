@@ -19,8 +19,8 @@ import net.openid.appauth.AuthorizationResponse
 
 class LoginFragment : Fragment() {
 
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    private var _fragmentLoginBinding: FragmentLoginBinding? = null
+    private val fragmentLoginBinding get() = _fragmentLoginBinding!!
     private val authViewModel by viewModels<AuthViewModel>()
     private val getAuthResponse =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -32,8 +32,8 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
+        _fragmentLoginBinding = FragmentLoginBinding.inflate(inflater, container, false)
+        return fragmentLoginBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun onLoginClick() {
-        binding.logInBtn.setOnClickListener {
+        fragmentLoginBinding.logInBtn.setOnClickListener {
             Log.e("AuthPOCLogs: ", "LogInFragment: Login Button Clicked")
             authViewModel.openLoginPage()
         }
@@ -60,7 +60,6 @@ class LoginFragment : Fragment() {
                         "LoginFrag: ${e.message} ${openAuthPageIntent.data.toString()}"
                     )
                 }
-
             }
         }
         lifecycleScope.launch {
@@ -90,6 +89,6 @@ class LoginFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _fragmentLoginBinding = null
     }
 }
