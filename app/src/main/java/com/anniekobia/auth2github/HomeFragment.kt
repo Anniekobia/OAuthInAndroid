@@ -24,7 +24,7 @@ class HomeFragment : Fragment() {
     private val logoutResponse = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-//        authViewModel.webLogoutComplete()
+        authViewModel.clearData()
     }
 
 
@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
 
     private fun setListeners() {
         fragmentHomeBinding.logOutBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_HomeFragment_to_LoginFragment)
+            authViewModel.openLogoutPage()
         }
         fragmentHomeBinding.refreshBtn.setOnClickListener {
             Toast.makeText(requireContext(), "Refresh Token Clicked", Toast.LENGTH_LONG).show()
@@ -74,6 +74,13 @@ class HomeFragment : Fragment() {
                         "AuthPOCLogs: ",
                         "HomeFrag: ${e.message} ${openLogoutPageIntent.data.toString()}"
                     )
+                }
+            }
+        }
+        lifecycleScope.launch {
+            authViewModel.logoutSuccess.collect {
+                if (it) {
+                    findNavController().navigate(R.id.action_HomeFragment_to_LoginFragment)
                 }
             }
         }

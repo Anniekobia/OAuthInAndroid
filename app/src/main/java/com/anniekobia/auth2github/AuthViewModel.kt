@@ -42,6 +42,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _openLogoutPage = MutableStateFlow(Intent())
     val openLogoutPage get() = _openLogoutPage.asStateFlow()
 
+    private val _logoutSuccess = MutableStateFlow(false)
+    val logoutSuccess get() = _logoutSuccess.asStateFlow()
+
     private val sharedPref =
         applicationContext.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
@@ -78,7 +81,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             AuthConfig.CLIENT_ID,
             AuthConfig.RESPONSE_TYPE,
             AuthConfig.REDIRECT_CALLBACK_URL.toUri()
-        ).build()
+        )
+            .setScopes(AuthConfig.SCOPE)
+            .build()
     }
 
     fun onAuthCodeReceived(tokenRequest: TokenRequest) {
@@ -111,8 +116,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         tokenRequest: TokenRequest,
     ) {
         val tokens = authService.performTokenRequest(
-            tokenRequest,
-            getClientAuthentication()
+            tokenRequest
+//            getClientAuthentication()
         ) { response, ex ->
             when {
                 response != null -> {
@@ -125,7 +130,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
                     Log.e(
                         "AuthPOCLogs: ",
-                        "AuthVM: TokensResponse ${response.request.refreshToken}"
+                        "AuthVM: TokensResponse: \n ID Token-> ${response.idToken} \n" +
+                                " AuthToken-> ${response.accessToken} \n " +
+                                " RefreshToken-> ${response.refreshToken} \n " +
+                                " Expiry -> ${response.accessTokenExpirationTime} \n " +
+                                " TokenType -> ${response.tokenType}"
                     )
                     with(sharedPref.edit()) {
                         putString("AUTH_TOKEN", response.accessToken)
@@ -133,18 +142,18 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         putString("ID_TOKEN", response.idToken)
                         apply()
                     }
-                    Log.e(
-                        "AuthPOCLogs: ",
-                        "AuthVM: Your AuthToken is ${response.accessToken}"
-                    )
-                    Log.e(
-                        "AuthPOCLogs: ",
-                        "AuthVM: Your RefreshToken is ${response.refreshToken}"
-                    )
-                    Log.e(
-                        "AuthPOCLogs: ",
-                        "AuthVM: Your IdToken is ${response.idToken}"
-                    )
+//                    Log.e(
+//                        "AuthPOCLogs: ",
+//                        "AuthVM: Your AuthToken is ${response.accessToken}"
+//                    )
+//                    Log.e(
+//                        "AuthPOCLogs: ",
+//                        "AuthVM: Your RefreshToken is ${response.refreshToken}"
+//                    )
+//                    Log.e(
+//                        "AuthPOCLogs: ",
+//                        "AuthVM: Your IdToken is ${response.idToken}"
+//                    )
 
                     Result.success(tokens)
                 }
@@ -159,9 +168,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         return tokens
     }
 
-    private fun getClientAuthentication(): ClientAuthentication {
-        return ClientSecretPost(AuthConfig.CLIENT_SECRET)
-    }
+//    private fun getClientAuthentication(): ClientAuthentication {
+//        return ClientSecretPost(AuthConfig.CLIENT_SECRET)
+//    }
 
     private fun getLogoutRequest(): EndSessionRequest {
         val idToken = sharedPref.getString("ID_TOKEN", "")
@@ -190,11 +199,19 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 "2. AuthVM: Intent Open Logout page before: ${logoutRequest.toUri()}"
             )
             _openLogoutPage.value = logoutIntent
-            Log.e("AuthPOCLogs: ", "2. AuthVM: Intent Open Logout page after: ${logoutRequest.toUri()}")
+            Log.e(
+                "AuthPOCLogs: ",
+                "2. AuthVM: Intent Open Logout page after: ${logoutRequest.toUri()}"
+            )
         } catch (e: Exception) {
             Log.e("AuthPOCLogs: ", "AuthVM: Intent Open Logout page failed")
             return
         }
+    }
+
+    fun clearData() {
+        sharedPref.edit().clear().apply()
+        _logoutSuccess.value = true
     }
 
     override fun onCleared() {
