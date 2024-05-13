@@ -57,7 +57,8 @@ class HomeFragment : Fragment() {
 
     private fun setListeners() {
         fragmentHomeBinding.logOutBtn.setOnClickListener {
-            authViewModel.openLogoutPage()
+            Toast.makeText(requireContext(), "Logout Clicked", Toast.LENGTH_LONG).show()
+//            authViewModel.openLogoutPage()
         }
         fragmentHomeBinding.refreshBtn.setOnClickListener {
             Toast.makeText(requireContext(), "Refresh Token Clicked", Toast.LENGTH_LONG).show()

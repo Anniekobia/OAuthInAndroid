@@ -26,7 +26,7 @@ object AuthConfig {
     * In our case the user’s information and repositories
     * ToDo: change this to "no scope" to only access public repositories
     */
-   const val SCOPE = "(no scope)"
+//   const val SCOPE = "openid"
 
    /**
     * ToDo 3: Set the Client Id & Secret generated once you create your Github Auth app

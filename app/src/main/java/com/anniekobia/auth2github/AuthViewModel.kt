@@ -82,7 +82,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             AuthConfig.RESPONSE_TYPE,
             AuthConfig.REDIRECT_CALLBACK_URL.toUri()
         )
-            .setScopes(AuthConfig.SCOPE)
+//            .setScopes(AuthConfig.SCOPE)
             .build()
     }
 
@@ -116,8 +116,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         tokenRequest: TokenRequest,
     ) {
         val tokens = authService.performTokenRequest(
-            tokenRequest
-//            getClientAuthentication()
+            tokenRequest,
+            getClientAuthentication()
         ) { response, ex ->
             when {
                 response != null -> {
@@ -168,9 +168,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         return tokens
     }
 
-//    private fun getClientAuthentication(): ClientAuthentication {
-//        return ClientSecretPost(AuthConfig.CLIENT_SECRET)
-//    }
+    private fun getClientAuthentication(): ClientAuthentication {
+        return ClientSecretPost(AuthConfig.CLIENT_SECRET)
+    }
 
     private fun getLogoutRequest(): EndSessionRequest {
         val idToken = sharedPref.getString("ID_TOKEN", "")
