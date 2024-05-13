@@ -142,18 +142,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         putString("ID_TOKEN", response.idToken)
                         apply()
                     }
-//                    Log.e(
-//                        "AuthPOCLogs: ",
-//                        "AuthVM: Your AuthToken is ${response.accessToken}"
-//                    )
-//                    Log.e(
-//                        "AuthPOCLogs: ",
-//                        "AuthVM: Your RefreshToken is ${response.refreshToken}"
-//                    )
-//                    Log.e(
-//                        "AuthPOCLogs: ",
-//                        "AuthVM: Your IdToken is ${response.idToken}"
-//                    )
 
                     Result.success(tokens)
                 }
@@ -173,7 +161,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun getLogoutRequest(): EndSessionRequest {
-        val idToken = sharedPref.getString("ID_TOKEN", "")
+        val idToken = sharedPref.getString("AUTH_TOKEN", "")
         return EndSessionRequest.Builder(authServiceConfiguration)
             .setIdTokenHint(idToken)
             .setPostLogoutRedirectUri(AuthConfig.LOGOUT_URL.toUri())
