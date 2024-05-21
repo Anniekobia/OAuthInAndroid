@@ -164,7 +164,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         val idToken = sharedPref.getString("AUTH_TOKEN", "")
         return EndSessionRequest.Builder(authServiceConfiguration)
             .setIdTokenHint(idToken)
-            .setPostLogoutRedirectUri(AuthConfig.LOGOUT_URL.toUri())
+            .setPostLogoutRedirectUri(AuthConfig.LOGOUT_CALLBACK_URL.toUri())
             .build()
     }
 

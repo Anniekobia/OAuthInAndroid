@@ -24,6 +24,7 @@ class HomeFragment : Fragment() {
     private val logoutResponse = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
+        Log.e("AuthPOCLogs: ", "HomeFrag: Login activity result work")
         authViewModel.clearData()
     }
 

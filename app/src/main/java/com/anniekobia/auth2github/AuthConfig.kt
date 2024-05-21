@@ -12,7 +12,7 @@ object AuthConfig {
     */
    const val REDIRECT_CALLBACK_URL = "com.anniekobia.auth2github://github/redirect_callback_url"
 
-   const val LOGOUT_CALLBACK_URL = "com.anniekobia.auth2github://github.com/logout_callback_url"
+   const val LOGOUT_CALLBACK_URL = "com.anniekobia.auth2github://github/logout_callback_url"
 
    /**
     * “code” constant from the AppAuth library. This constant is responsible for returned value to
@@ -26,7 +26,7 @@ object AuthConfig {
     * In our case the user’s information and repositories
     * ToDo: change this to "no scope" to only access public repositories
     */
-//   const val SCOPE = "openid"
+   const val SCOPE = "openid"
 
    /**
     * ToDo 3: Set the Client Id & Secret generated once you create your Github Auth app
@@ -34,6 +34,4 @@ object AuthConfig {
     */
    const val CLIENT_ID = BuildConfig.CLIENT_ID
    const val CLIENT_SECRET = BuildConfig.CLIENT_SECRET
-
-//   const val CALLBACK_URL = "ru.kts.oauth://github.com/callback"
 }
